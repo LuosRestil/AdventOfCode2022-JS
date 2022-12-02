@@ -1,5 +1,3 @@
-console.time("process");
-
 const fs = require('fs');
 let input = fs.readFileSync('inputs/day02.txt', 'utf8').split('\n');
 
@@ -8,7 +6,7 @@ let score = 0;
 const beats = {'C': 'B', 'B': 'A', 'A': 'C'};
 for (let line of input) {
   const opponentMove = line[0];
-  const myMove = String.fromCharCode(line.charCodeAt(2) - 23);
+  const myMove = String.fromCharCode(line.charCodeAt(2) - 23); // 23 is the difference between 'X' and 'A'
   score += calculateMatchScore1(myMove, opponentMove, beats);
 }
 console.log('Answer 1: ' + score);
@@ -26,8 +24,6 @@ for (let line of input) {
   score += calculateMatchScore2(opponentMove, requiredResult, requiredMoves);
 }
 console.log('Answer 2: ' + score);
-
-console.timeEnd("process");
 
 
 function calculateMatchScore1(myMove, opponentMove, beats) {
