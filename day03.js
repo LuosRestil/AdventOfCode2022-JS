@@ -34,6 +34,7 @@ function getPriority(char) {
   return asciiVal > 96 ? asciiVal - 96 : asciiVal - 38;
 }
 
+// set intersection
 function findBadgeType(trio) {
   let commonItems = new Set(trio[0]);
   commonItems = new Set(trio[1].split('').filter(item => commonItems.has(item)));
