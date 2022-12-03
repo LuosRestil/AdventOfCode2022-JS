@@ -30,10 +30,8 @@ console.log("Answer 2: " + priorityTotal);
 
 
 function getPriority(char) {
-  let priority = char.charCodeAt(0);
-  if (priority > 96) priority -= 96;
-  else priority -= 38;
-  return priority;
+  let asciiVal = char.charCodeAt(0);
+  return asciiVal > 96 ? asciiVal - 96 : asciiVal - 38;
 }
 
 function findBadgeType(trio) {
