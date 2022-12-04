@@ -11,7 +11,7 @@ for (let line of input) {
     fullOverlaps++;
   }
 }
-console.log(fullOverlaps);
+console.log("Answer 1: " + fullOverlaps);
 
 // Part 2
 let totalOverlaps = 0;
@@ -25,4 +25,4 @@ for (let line of input) {
     totalOverlaps++;
   }
 }
-console.log(totalOverlaps);
+console.log("Answer 2: " + totalOverlaps);
