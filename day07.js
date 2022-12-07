@@ -27,7 +27,6 @@ for(let line of input) {
     if (words[0] === 'dir') {
       let dirName = words[1];
       cwd.children[dirName] = {
-        type: 'dir',
         size: 0,
         parent: cwd,
         children: {}
