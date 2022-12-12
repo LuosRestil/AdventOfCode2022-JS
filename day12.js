@@ -70,9 +70,7 @@ console.log("Answer 2: " + minimumDistanceToSummit);
 
 
 function findDistanceToSummit(letterGrid, startPos = null) {
-  let grid = letterGrid.map(row => {
-    return row.slice();
-  });
+  let grid = letterGrid.map(row => row.slice());
   let openSet = [];
   let closedSet = [];
   let start;
