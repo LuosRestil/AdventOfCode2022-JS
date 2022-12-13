@@ -25,10 +25,10 @@ lines.push([[6]]);
 
 lines.sort((a, b) => inOrder(a, b));
 
-let decoderKey;
+let decoderKey = 1;
 for (let i = 0; i < lines.length; i++) {
   const lineString = JSON.stringify(lines[i]);
-  if (lineString === '[[2]]') decoderKey = i + 1;
+  if (lineString === '[[2]]') decoderKey *= (i + 1);
   else if (lineString === '[[6]]') {
     decoderKey *= (i + 1);
     break;
