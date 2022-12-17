@@ -1,8 +1,6 @@
 const fs = require('fs');
 let input = fs.readFileSync('inputs/day16.txt', 'utf8').split('\n');
 
-console.time('pt1');
-
 // create graph
 const graph = {};
 for (let line of input) {
@@ -31,10 +29,7 @@ for (let nodeName in graph) {
   graph[nodeName].distances = distances;
 }
 
-const memo = {};
-
 console.log('Answer 1: ' + traverse('AA', 0, 0, 30, []));
-console.timeEnd('pt1');
 
 
 function traverse(currentLoc, flowRate, totalFlow, timeRemaining, openValves) {
@@ -54,14 +49,6 @@ function traverse(currentLoc, flowRate, totalFlow, timeRemaining, openValves) {
         let newFlowRate = flowRate + node.rate;
         let newTotalFlow = totalFlow + (flowRate * (travelTime + 1));
         let newTimeRemaining = timeRemaining - travelTime - 1;
-        // let total;
-        // let cacheKey = `${nodeName}:${newFlowRate}:${newTotalFlow}:${newTimeRemaining}`;
-        // if (cache[cacheKey]) {
-        //   total = cache[cacheKey];
-        // } else {
-        //   total = traverse(nodeName, newFlowRate, newTotalFlow, newTimeRemaining, [...openValves, nodeName], cache);
-        //   cache[cacheKey] = total;
-        // }
         let total = traverse(nodeName, newFlowRate, newTotalFlow, newTimeRemaining, [...openValves, nodeName]);
         totals.push(total);
     }
