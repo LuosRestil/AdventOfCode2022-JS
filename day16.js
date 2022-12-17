@@ -28,6 +28,12 @@ for (let nodeName in graph) {
   }
   graph[nodeName].distances = distances;
 }
+// remove unnecessary nodes
+for (let nodeName in graph) {
+  if (graph[nodeName].rate === 0 && nodeName !== 'AA') {
+    delete graph[nodeName];
+  }
+}
 
 console.log('Answer 1: ' + traverse('AA', 0, 0, 30, []));
 
