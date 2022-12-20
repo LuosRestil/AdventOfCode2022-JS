@@ -60,13 +60,7 @@ function traverse(currentLoc, flowRate, totalFlow, timeRemaining, openValves) {
     }
   }
 
-  let ans;
-  if (totals.length > 0) {
-    ans = totals.sort((a, b) => b - a)[0];
-  } else {
-    ans = totalFlow + (timeRemaining * flowRate);
-  }
-  return ans;
+  return totals.length > 0 ? totals.sort((a, b) => b - a)[0] : totalFlow + (timeRemaining * flowRate);
 }
 
 /*
