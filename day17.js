@@ -2,11 +2,11 @@ const fs = require('fs');
 
 const jetPattern = fs.readFileSync('inputs/day17.txt', 'utf8').split('').map(char => char === '<' ? -1 : 1);
 const blocks = [
-  {locs: [[0, 0], [0, 1], [0, 2], [0, 3]], height: 1},
-  {locs: [[0, 1], [1, 0], [1, 1], [1, 2], [2, 1]], height: 3},
-  {locs: [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2]], height: 3},
-  {locs: [[0, 0], [1, 0], [2, 0], [3, 0]], height: 4},
-  {locs: [[0, 0], [0, 1], [1, 0], [1, 1]], height: 2}
+  {locs: [[0, 0], [0, 1], [0, 2], [0, 3]], height: 1, index: 0},
+  {locs: [[0, 1], [1, 0], [1, 1], [1, 2], [2, 1]], height: 3, index: 1},
+  {locs: [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2]], height: 3, index: 2},
+  {locs: [[0, 0], [1, 0], [2, 0], [3, 0]], height: 4, index: 3},
+  {locs: [[0, 0], [0, 1], [1, 0], [1, 1]], height: 2, index: 4}
 ];
 let numRocks = 2022;
 const boardWidth = 7;
@@ -23,6 +23,7 @@ let [blocksCounter, jetsCounter] = [0, 0];
 let [blocksLen, jetsLen] = [blocks.length, jetPattern.length];
 let blockSettled = true;
 let block, loc, move, jet, floorSearch;
+let data = [];
 while (blocksCounter < numRocks) {
   jet = jetPattern[jetsCounter % jetsLen];
   if (blockSettled) {
@@ -47,15 +48,28 @@ while (blocksCounter < numRocks) {
     } else {
       settlePiece(block, loc);
       blockSettled = true;
+      // let oldHighPoint = highPoint;
       highPoint = Math.max(loc[0] + block.height, highPoint);
+      // data.push(highPoint - oldHighPoint);
       blocksCounter++;
+      if (blocksCounter % blocksLen === 0) {
+        console.log(`${blocksCounter}, ${blocksCounter % blocksLen}, ${jetsCounter % jetsLen}, ${loc[0] + block.height}`)
+      }
     }
     move = 'blow';
   }
-
 }
-
 console.log('Answer 1: ' + highPoint);
+
+// Part 2
+// look for patterns in the tower heights to find the data below
+let x = 1000000000000;
+let cycleLength = 1690;
+let cycleIncrease = 2647;
+let cycles = Math.floor(x / cycleLength);
+let startValue = 880;
+console.log('Answer 2: ' + startValue + (cycles * cycleIncrease));
+
 
 function canBeBlown(block, loc, jet) {
   return block.locs.every(square => {
