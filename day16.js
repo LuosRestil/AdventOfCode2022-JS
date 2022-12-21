@@ -1,5 +1,5 @@
 const fs = require('fs');
-let input = fs.readFileSync('inputs/day16Sample.txt', 'utf8').split('\n');
+let input = fs.readFileSync('inputs/day16.txt', 'utf8').split('\n');
 
 // create graph
 const graph = {};
@@ -30,36 +30,41 @@ for (let nodeName in graph) {
 }
 // remove unnecessary nodes
 for (let nodeName in graph) {
-  if (graph[nodeName].rate === 0 && nodeName !== 'AA') {
+  if (graph[nodeName].rate === 0) {
     delete graph[nodeName];
   }
 }
 
-// console.log('Answer 1: ' + JSON.stringify(traverse('AA', 0, 0, 30, [], graph).sort((a, b) => b.totalFlow - a.totalFlow)[0]));
+console.log('Answer 1: ' + JSON.stringify(traverse('AA', 0, 0, 30, [], graph)));
 
 // Part 2
+let paths = findPaths(Object.keys(graph))
+  .map(path => {
+    let pathGraph = {};
+    for (let room of path) {
+      pathGraph[room] = graph[room];
+    }
+    return {value: traverse('AA', 0, 0, 26, [], pathGraph), path};
+  });
+
 let max = 0;
-let possiblePaths = findPaths(Object.keys(graph));
-for (let path of possiblePaths) {
-  if (isCompletable(path.human, 26) && isCompletable(path.elephant, 26)) {
-    let humanGraph = {};
-    let elephantGraph = {};
-    for (let room of path.human) {
-      humanGraph[room] = graph[room];
+for (let i = 0; i < paths.length - 1; i++) {
+  for (let j = i + 1; j < paths.length; j++) {
+    if (paths[i].path.every(room => !paths[j].path.includes(room))) {
+      let total = paths[i].value + paths[j].value;
+      if (total > max) {
+        max = total;
+      }
     }
-    for (let room of path.elephant) {
-      elephantGraph[room] = graph[room];
-    }
-    let total = traverse('AA', 0, 0, 26, [], humanGraph) + traverse('AA', 0, 0, 26, [], elephantGraph);
-    if (total > max) max = total;
   }
 }
-console.log(max);
+
+console.log('Answer 2: ' + max);
 
 
 function traverse(currentLoc, flowRate, totalFlow, timeRemaining, openValves, graph) {
   if (!timeRemaining) {
-    return [{totalFlow, openValves}];
+    return totalFlow;
   }
 
   let totals = [];
@@ -74,19 +79,27 @@ function traverse(currentLoc, flowRate, totalFlow, timeRemaining, openValves, gr
         let newFlowRate = flowRate + node.rate;
         let newTotalFlow = totalFlow + (flowRate * (travelTime + 1));
         let newTimeRemaining = timeRemaining - travelTime - 1;
-        let total = traverse(nodeName, newFlowRate, newTotalFlow, newTimeRemaining, [...openValves, nodeName], graph);
-        totals.push(...total);
+        let newOpenValves = [...openValves, nodeName];
+        let total = traverse(nodeName, newFlowRate, newTotalFlow, newTimeRemaining, newOpenValves, graph);
+        totals.push(total);
     }
   }
-  return totals.length > 0 ? totals : [{totalFlow: totalFlow + (timeRemaining * flowRate), openValves}];
+  return totals.length > 0 ? totals.sort((a, b) => b - a)[0] : totalFlow + (timeRemaining * flowRate);
 }
 
-function isCompletable(path, timeAllowed) {
-  let totalTime = 0;
-  for (let i = 0; i < path.length - 1; i++) {
-    totalTime += graph[path[i]].distances[path[i + 1]] + 1;
+function findPaths(set) {
+  let paths = [];
+  for (let i = 0; i < Math.pow(2, set.length); i++) {
+    let bin = i.toString(2).padStart(set.length, '0');
+    let path = [];
+    for (let j = 0; j < bin.length; j++) {
+      if (bin[j] === '1') {
+        path.push(set[j]);
+      }
+    }
+    paths.push(path);
   }
-  return totalTime <= timeAllowed;
+  return paths;
 }
 
 /*
@@ -110,21 +123,3 @@ Sample5
 Part 1: 2400
 Part 2: 3680
 */
-
-function findPaths(set) {
-  let paths = [];
-  for (let i = 0; i < Math.pow(2, set.length); i++) {
-    let bin = i.toString(2).padStart(set.length, '0');
-    let human = [];
-    let elephant = [];
-    for (let j = 0; j < bin.length; j++) {
-      if (bin[j] === '1') {
-        human.push(set[j]);
-      } else {
-        elephant.push(set[j]);
-      }
-    }
-    paths.push({human, elephant});
-  }
-  return paths;
-}
