@@ -23,7 +23,6 @@ let [blocksCounter, jetsCounter] = [0, 0];
 let [blocksLen, jetsLen] = [blocks.length, jetPattern.length];
 let blockSettled = true;
 let block, loc, move, jet, floorSearch;
-let data = [];
 while (blocksCounter < numRocks) {
   jet = jetPattern[jetsCounter % jetsLen];
   if (blockSettled) {
