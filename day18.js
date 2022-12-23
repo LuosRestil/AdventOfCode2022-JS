@@ -21,21 +21,27 @@ for (let key in lava) {
 console.log('Answer 1: ' + uncovered);
 
 // get bounds of space
-let [maxX,maxY, maxZ] = [0,0,0];
+let [maxX, maxY, maxZ, minX, minY, minZ] = [0, 0, 0,Infinity, Infinity, Infinity];
 for (let cube of Object.values(lava)) {
-    if (cube.x > maxX) maxX = cube.x;
-    if (cube.y > maxY) maxY = cube.y;
-    if (cube.z > maxZ) maxZ = cube.z;
+    maxX = Math.max(cube.x, maxX);
+    maxY = Math.max(cube.y, maxY);
+    maxZ = Math.max(cube.z, maxZ);
+    minX = Math.min(cube.x, minX);
+    minY = Math.min(cube.y, minY);
+    minZ = Math.min(cube.z, minZ);
 }
 // allow air around edges of lava
 maxX += 1;
 maxY += 1;
 maxZ += 1;
+minX -= 1;
+minY -= 1;
+minZ -= 1;
 
 // get air cubes, note adjacent lava cube faces
 let uncovered2 = 0;
 let air = new Set();
-let queue = ['0:0:0'];
+let queue = [`${minX}:${minY}:${minZ}`];
 while (queue.length > 0) {
     let curr = queue.pop();
     let coords = curr.split(':').map(num => parseInt(num));
@@ -50,36 +56,18 @@ while (queue.length > 0) {
         }
     }
 }
-console.log('Wrong answer 2: ' + uncovered2);
-
-let pocketFaces = 0;
-for (let x = 0; x < maxX; x++) {
-    for (let y = 0; y < maxY; y++) {
-        for (let z = 0; z < maxZ; z++) {
-            let key = `${x}:${y}:${z}`;
-            if (!air.has(key) && !lava[key]) {
-                // air pocket
-                for (let neighbor of getNeighbors(x,y,z)) {
-                    if (lava[neighbor]) {
-                        pocketFaces++;
-                    }
-                }
-            }
-        }
-    }
-}
-console.log('Right answer 2: ' + (uncovered - pocketFaces));
+console.log('Answer 2: ' + uncovered2);
 
 function getNeighbors(x, y, z) {
     let neighbors = [];
     // adjacent x
-    if (x > 0) neighbors.push(`${x-1}:${y}:${z}`);
+    if (x > minX) neighbors.push(`${x-1}:${y}:${z}`);
     if (x < maxX) neighbors.push(`${x+1}:${y}:${z}`);
     // adjacent y
-    if (y > 0) neighbors.push(`${x}:${y-1}:${z}`);
+    if (y > minY) neighbors.push(`${x}:${y-1}:${z}`);
     if (y < maxY) neighbors.push(`${x}:${y+1}:${z}`);
     // adjacent z
-    if (z > 0) neighbors.push(`${x}:${y}:${z-1}`);
+    if (z > minZ) neighbors.push(`${x}:${y}:${z-1}`);
     if (z < maxZ) neighbors.push(`${x}:${y}:${z+1}`);
     return neighbors;
 }
